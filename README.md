@@ -2,7 +2,7 @@
 
 ## Conhecendo a aplicação em teste
 
-A aplicação se chama Central de Atendimento ao Cliente TAT - [**CAC TAT**](https://cac-tat.s3.eu-central-1.amazonaws.com/index.html) - e foi desenvolvida usando HTML, CSS e JavaScript.
+A aplicação se chama Central de Atendimento ao Cliente - e foi desenvolvida usando HTML, CSS e JavaScript.
 
 ### Funcionalidades da aplicação
 
