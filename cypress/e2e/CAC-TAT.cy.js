@@ -57,10 +57,10 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     })
     it('Enviar o formuário com sucesso usando um comando customizado', () => {
         cy.fillMandatoryFieldsAndSubmit(
-            Cypress.env('nome'),
-            Cypress.env('sobrenome'),
-            Cypress.env('email'),
-            Cypress.env('telefone')
+            Cypress.env('nome') || 'teste',
+            Cypress.env('sobrenome') || "testando",
+            Cypress.env('email') || 'teste@email.com',
+            Cypress.env('telefone') || '11995522'
         )
         cy.get('.success').should('be.visible')
     })
@@ -123,7 +123,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
                 expect($input[0].files[1].name).to.equal('example_2.json')
             })
     })
-    it.only('seleciona um arquivo simulando um drag-and-drop', () => {
+    it('seleciona um arquivo simulando um drag-and-drop', () => {
         cy.get('input[type="file"]#file-upload')
             .should('not.have.value')
             .selectFile(
@@ -136,7 +136,5 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             })
 
     })
-
-
 
 })
