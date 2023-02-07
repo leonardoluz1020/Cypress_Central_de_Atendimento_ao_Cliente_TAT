@@ -5,13 +5,13 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "cypress:open": "cypress open",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cy:open": "cypress open",
+    "test": "cypress run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "cypress": "^12.5.1"
   }
 }
