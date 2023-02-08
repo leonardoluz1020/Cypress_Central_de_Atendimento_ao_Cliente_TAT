@@ -207,7 +207,17 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             .invoke('hide')
             .should('not.be.visible')
     })
-    
+    it('preenche a area de texto usando o comando invoke', () => {
+        const textLongo = Cypress._.repeat('Testando tudo com cypress', 30)
+        cy.get('#open-text-area')
+            .invoke('val', textLongo)
+            .should('have.value', textLongo)
 
-
+    })
+    it.only('Encontrando o gato', ()=> {
+        cy.get('span')
+        .invoke('show')
+        cy.get('#cat')
+        .should('be.visible')
+    })
 })
