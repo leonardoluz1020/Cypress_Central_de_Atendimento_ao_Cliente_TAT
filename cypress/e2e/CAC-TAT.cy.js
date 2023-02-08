@@ -1,10 +1,6 @@
 /// <reference types="Cypress" /> 
 
 const textLong = 'Testando a página da central de atendimento ao cliente TAT by Walmir FilhoEste conteúdo foi inicialmente publicado na Newsletter da Talking About Testing. Uma dúvida que frequentemente surge entre QAs é: "Como configurar um pipeline de integração contínua para rodar testes em paralelo?"Vou demonstrar uma solução simples utilizando Cypress e GitHub Actions, porém, a mesma idéia pode ser utilizada independente do framework de testes e serviço de integração contínua escolhido.Obs.: Para que os testes '
-const nome = 'Leonardo'
-const sobrenome = 'Oliveira'
-const email = 'leo@email.com'
-const telefone = '1199558822'
 
 describe('Central de Atendimento ao Cliente TAT', () => {
 
