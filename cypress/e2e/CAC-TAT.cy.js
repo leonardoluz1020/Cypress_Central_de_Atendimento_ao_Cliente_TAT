@@ -15,7 +15,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
     })
     it('Preencha os campos obrigatório e enviar o formulário', () => {
-        const textLong = 'teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,'
+        const textLong = Cypress._.repeat('testes', 70)
         cy.clock()
         cy.get('#firstName').should('be.visible').type('Leonardo').should('have.value', 'Leonardo')
         cy.get('#lastName').should('be.visible').type('Oliveira').should('have.value', 'Oliveira')
@@ -57,10 +57,10 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('.error').should('not.be.visible')
     })
     it('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
-        cy.get('#firstName').type('Leonardo').should('have.value', 'Leonardo').clear().should('have.value', '')
-        cy.get('#lastName').type('Oliveira').should('have.value', 'Oliveira').clear().should('have.value', '')
-        cy.get('#email').type('leoemail.com').should('have.value', 'leoemail.com').clear().should('have.value', '')
-        cy.get('#phone').type('1139395454').should('have.value', '1139395454').clear().should('have.value', '')
+        cy.get('#firstName').type(exempleUser.nome, { delay: 0 }).should('have.value', exempleUser.nome).clear().should('have.value', '')
+        cy.get('#lastName').type(exempleUser.sobrenome, { delay: 0 }).should('have.value', exempleUser.sobrenome).clear().should('have.value', '')
+        cy.get('#email').type(exempleUser.email, { delay: 0 }).should('have.value', exempleUser.email).clear().should('have.value', '')
+        cy.get('#phone').type(exempleUser.telefone, { delay: 0 }).should('have.value', exempleUser.telefone).clear().should('have.value', '')
     })
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
         cy.clock()
@@ -69,7 +69,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.tick(TREE_SECONDS_IN_MS)
         cy.get('.error').should('not.be.visible')
     })
-    it.only('Enviar o formuário com sucesso usando um comando customizado', () => {
+    it('Enviar o formuário com sucesso usando um comando customizado', () => {
         const user = Cypress.env('user') || exempleUser;
         cy.clock()
         cy.fillMandatoryFieldsAndSubmit(user)
@@ -173,5 +173,41 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#privacy a').invoke('removeAttr', 'target').click()
         cy.get('#title').should('contain', 'CAC TAT - Política de privacidade')
     })
+    Cypress._.times(2, () => {
+        it('Enviar o formuário com sucesso usando um comando customizado', () => {
+            cy.clock()
+            cy.fillMandatoryFieldsAndSubmit(exempleUser)
+            cy.get('.success').should('be.visible')
+            cy.tick(TREE_SECONDS_IN_MS)
+            cy.get('.success').should('not.be.visible')
+        })
+
+    })
+    Cypress._.times(10, () => {
+        it('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
+            cy.get('#firstName').type(exempleUser.nome, { delay: 0 }).should('have.value', exempleUser.nome).clear().should('have.value', '')
+            cy.get('#lastName').type(exempleUser.sobrenome, { delay: 0 }).should('have.value', exempleUser.sobrenome).clear().should('have.value', '')
+            cy.get('#email').type(exempleUser.email, { delay: 0 }).should('have.value', exempleUser.email).clear().should('have.value', '')
+            cy.get('#phone').type(exempleUser.telefone, { delay: 0 }).should('have.value', exempleUser.telefone).clear().should('have.value', '')
+        })
+    })
+    it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+        cy.get('.success')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Mensagem enviada com sucesso.')
+            .invoke('hide')
+            .should('not.be.visible')
+        cy.get('.error')
+            .should('not.be.visible')
+            .invoke('show')
+            .should('be.visible')
+            .and('contain', 'Valide os campos obrigatórios!')
+            .invoke('hide')
+            .should('not.be.visible')
+    })
+    
+
 
 })
