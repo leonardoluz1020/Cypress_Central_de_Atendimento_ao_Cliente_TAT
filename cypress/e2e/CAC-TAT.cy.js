@@ -1,8 +1,13 @@
 /// <reference types="Cypress" /> 
 
-const textLong = 'Testando a página da central de atendimento ao cliente TAT by Walmir FilhoEste conteúdo foi inicialmente publicado na Newsletter da Talking About Testing. Uma dúvida que frequentemente surge entre QAs é: "Como configurar um pipeline de integração contínua para rodar testes em paralelo?"Vou demonstrar uma solução simples utilizando Cypress e GitHub Actions, porém, a mesma idéia pode ser utilizada independente do framework de testes e serviço de integração contínua escolhido.Obs.: Para que os testes '
-
 describe('Central de Atendimento ao Cliente TAT', () => {
+    const TREE_SECONDS_IN_MS = 3000;
+    const exempleUser = {
+        nome: "Teste",
+        sobrenome: "Testando",
+        email: "teste@email.com",
+        telefone: "1199554433"
+    }
 
     beforeEach(() => cy.visit('./src/index.html'))
 
@@ -10,6 +15,8 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
     })
     it('Preencha os campos obrigatório e enviar o formulário', () => {
+        const textLong = 'teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,'
+        cy.clock()
         cy.get('#firstName').should('be.visible').type('Leonardo').should('have.value', 'Leonardo')
         cy.get('#lastName').should('be.visible').type('Oliveira').should('have.value', 'Oliveira')
         cy.get('#email').should('be.visible').type('leo@email.com').should('have.value', 'leo@email.com')
@@ -18,8 +25,11 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#open-text-area').should('be.visible').type(textLong, { delay: 0 }).should('have.value', textLong)
         cy.contains('button', 'Enviar').click()
         cy.get('.success').should('be.visible')
+        cy.tick(TREE_SECONDS_IN_MS)
+        cy.get('.success').should('not.be.visible')
     })
     it('Exibir mensagem de erro ao submeter o formulário com formatação de email inválida', () => {
+        cy.clock()
         cy.get('#firstName').should('be.visible').type('Leonardo').should('have.value', 'Leonardo')
         cy.get('#lastName').should('be.visible').type('Oliveira').should('have.value', 'Oliveira')
         cy.get('#email').should('be.visible').type('leoemail.com').should('have.value', 'leoemail.com')
@@ -28,11 +38,14 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#open-text-area').should('be.visible').type('teste').should('have.value', 'teste')
         cy.contains('button', 'Enviar').click()
         cy.get('.error').should('be.visible')
+        cy.tick(TREE_SECONDS_IN_MS)
+        cy.get('.error').should('not.be.visible')
     })
     it('Após o preenchimento do input de numero telefônico, o mesmo deve permenecer vazio.', () => {
         cy.get('#phone').should('be.visible').type('leonardo').should('have.value', '')
     })
     it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+        cy.clock();
         cy.get('#firstName').should('be.visible').type('Leonardo').should('have.value', 'Leonardo')
         cy.get('#lastName').should('be.visible').type('Oliveira').should('have.value', 'Oliveira')
         cy.get('#email').should('be.visible').type('leo@email.com').should('have.value', 'leo@email.com')
@@ -40,6 +53,8 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#open-text-area').should('be.visible').type('teste').should('have.value', 'teste')
         cy.contains('button', 'Enviar').click()
         cy.get('.error').should('be.visible')
+        cy.tick(TREE_SECONDS_IN_MS)
+        cy.get('.error').should('not.be.visible')
     })
     it('Preenche e limpa os campos nome, sobrenome, email e telefone', () => {
         cy.get('#firstName').type('Leonardo').should('have.value', 'Leonardo').clear().should('have.value', '')
@@ -48,17 +63,19 @@ describe('Central de Atendimento ao Cliente TAT', () => {
         cy.get('#phone').type('1139395454').should('have.value', '1139395454').clear().should('have.value', '')
     })
     it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', () => {
+        cy.clock()
         cy.contains('button', 'Enviar').click()
         cy.get('.error').should('be.visible')
+        cy.tick(TREE_SECONDS_IN_MS)
+        cy.get('.error').should('not.be.visible')
     })
-    it('Enviar o formuário com sucesso usando um comando customizado', () => {
-        cy.fillMandatoryFieldsAndSubmit(
-            Cypress.env('nome') || 'teste',
-            Cypress.env('sobrenome') || "testando",
-            Cypress.env('email') || 'teste@email.com',
-            Cypress.env('telefone') || '11995522'
-        )
+    it.only('Enviar o formuário com sucesso usando um comando customizado', () => {
+        const user = Cypress.env('user') || exempleUser;
+        cy.clock()
+        cy.fillMandatoryFieldsAndSubmit(user)
         cy.get('.success').should('be.visible')
+        cy.tick(TREE_SECONDS_IN_MS)
+        cy.get('.success').should('not.be.visible')
     })
     it('Selecionar um produto (Youtube) por seu texto (Texto)', () => {
         cy.get('#product')
@@ -142,19 +159,19 @@ describe('Central de Atendimento ao Cliente TAT', () => {
                 expect($input[0].files[1].name).to.equal('example_2.json')
             })
     })
-    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique',()=>{
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', () => {
         cy.get('#privacy > a').should('have.attr', 'target', '_blank')
     })
     it('acessa a página da política de privacidade removendo o target e então clicando no link', () => {
         cy.get('#privacy > a')
             .should('be.visible')
-            .invoke('removeAttr','target')
+            .invoke('removeAttr', 'target')
             .click()
-        cy.contains('Talking About Testing').should('be.visible') 
+        cy.contains('Talking About Testing').should('be.visible')
     })
-    it('testa a página da política de privacidade de forma independente', ()=> {
-        cy.get('#privacy a').invoke('removeAttr','target').click()
-        cy.get('#title').should('contain','CAC TAT - Política de privacidade')    
+    it('testa a página da política de privacidade de forma independente', () => {
+        cy.get('#privacy a').invoke('removeAttr', 'target').click()
+        cy.get('#title').should('contain', 'CAC TAT - Política de privacidade')
     })
-    
+
 })

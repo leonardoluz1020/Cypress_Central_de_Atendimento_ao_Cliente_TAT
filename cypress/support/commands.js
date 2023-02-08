@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 
-Cypress.Commands.add('fillMandatoryFieldsAndSubmit', (nome,sobrenome, email, telefone) => {     
+Cypress.Commands.add('fillMandatoryFieldsAndSubmit', ({nome,sobrenome, email, telefone}) => {     
     cy.get('#firstName').should('be.visible').type(nome).should('have.value', nome)
     cy.get('#lastName').should('be.visible').type(sobrenome).should('have.value', sobrenome)
     cy.get('#email').should('be.visible').type(email).should('have.value', email)
