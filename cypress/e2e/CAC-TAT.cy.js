@@ -111,7 +111,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
                 expect($input[0].files[0].name).to.equal("example.json")
             })
     })
-    it('selecionar arquivos da pasta fixtures', () => {
+    it('selecionar varios arquivos da pasta fixtures', () => {
         cy.get('input[type="file"]#file-upload')
             .should('not.have.value')
             .selectFile([
@@ -136,5 +136,29 @@ describe('Central de Atendimento ao Cliente TAT', () => {
             })
 
     })
-
+    it('seleciona um ou mais arquivos utilizando uma fixture para a qual foi dada um alias', () => {
+        cy.fixture('example.json').as('sampleFile')
+        cy.fixture("example_2.json").as('sampleFiles2')
+        cy.get('input[type="file"]')
+            .selectFile(['@sampleFile', '@sampleFiles2'])
+            .each(($input) => {
+                expect($input[0].files[0].name).to.equal('example.json')
+                expect($input[0].files[1].name).to.equal('example_2.json')
+            })
+    })
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique',()=>{
+        cy.get('#privacy > a').should('have.attr', 'target', '_blank')
+    })
+    it('acessa a página da política de privacidade removendo o target e então clicando no link', () => {
+        cy.get('#privacy > a')
+            .should('be.visible')
+            .invoke('removeAttr','target')
+            .click()
+        cy.contains('Talking About Testing').should('be.visible') 
+    })
+    it('testa a página da política de privacidade de forma independente', ()=> {
+        cy.get('#privacy a').invoke('removeAttr','target').click()
+        cy.get('#title').should('contain','CAC TAT - Política de privacidade')    
+    })
+    
 })
